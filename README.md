@@ -34,7 +34,7 @@ With this controller model in place, the vehicle safely negotiates the corners a
 
 Lap time is about 1 minute 40 seconds. The model builds speed when there are few obstacles such as curves or non-smooth ground truth, and applies brakes when significant cross-track error exists.
 
-The model was tested in a variety of simulator resolution and render modes, and also for long periods of time to determine if an off-track fault might be encountered. Final PID coefficients: Kp=1.0, Ki=0.0, and Kd=32.0 in first and second gear, and Kd=64.0 in fourth and fifth gear.
+The model was tested in a variety of simulator resolution and render modes, and also for long periods of time to determine if an off-track fault might be encountered. <b>Final PID coefficients:</b> Kp=1.0, Ki=0.0, and Kd=32.0 in first and second gear, and Kd=64.0 in fourth and fifth gear. The image below is a link to a sample video sequence of a lap around the lake:
 
 [![Lake Track Video](./images/LakeTrackVideo.png "Lake Track Video")](https://vimeo.com/219612239)
 
