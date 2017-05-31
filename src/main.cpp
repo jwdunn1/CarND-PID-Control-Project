@@ -14,7 +14,6 @@
 
 // for convenience
 using json = nlohmann::json;
-const double M_PI = 3.14159265358979323846;
 
 class Timer1 {
  public:
@@ -126,7 +125,7 @@ int main() {
   //pid.Init(1.0, 0.00001, 32.0);
   //pid.Init(1.0, 0.00001, 4.0); // try slow
 
-  h.onMessage([&pid, &timer](uWS::WebSocket<uWS::SERVER> *ws, char *data, size_t length, uWS::OpCode opCode) {
+  h.onMessage([&pid, &timer](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
@@ -236,20 +235,20 @@ int main() {
         msgJson["throttle"] = throttle;
         auto msg = "42[\"steer\"," + msgJson.dump() + "]";
         //std::cout << msg << std::endl;
-        ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+        ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
       }
       else {
         // reset
         faultCount++;
         std::cout << "resetting" << std::endl;
         std::string msg("42[\"reset\", {}]");
-        ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+        ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
       }
         }
       } else {
         // Manual driving
         std::string msg = "42[\"manual\",{}]";
-        ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+        ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
       }
     }
   });
@@ -269,17 +268,17 @@ int main() {
     }
   });
 
-  h.onConnection([&h](uWS::WebSocket<uWS::SERVER> *ws, uWS::HttpRequest req) {
+  h.onConnection([&h](uWS::WebSocket<uWS::SERVER> ws, uWS::HttpRequest req) {
     std::cout << "Connected!!!" << std::endl;
   });
 
-  h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER> *ws, int code, char *message, size_t length) {
-    ws->close();
+  h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER> ws, int code, char *message, size_t length) {
+    ws.close();
     std::cout << "Disconnected" << std::endl;
   });
 
   int port = 4567;
-  if (h.listen("0.0.0.0", port))  // modified for IP4
+  if (h.listen(port))  // if IPv4, use: if (h.listen("0.0.0.0",port))
   {
     std::cout << "Listening to port " << port << std::endl;
   }
