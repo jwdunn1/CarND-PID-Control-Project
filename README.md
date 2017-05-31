@@ -39,7 +39,9 @@ The model was tested in a variety of simulator resolution and render modes, and 
 [![Lake Track Video](./images/LakeTrackVideo.png "Lake Track Video")](https://vimeo.com/219612239)
 
 ### Further research
-1. The ground truth measures contain anomalies (notably the far end of the bridge [the point marked "A" on the map], the joints of the curves [point "B"], and the zig-zags in final sharp left [point "C"]). 2. Additional time can be spent on tuning gear transitions. 3. A script-controlled operational framework would facilitate automated testing across the matrix of screen resolutions and graphics qualities.
+1. The ground truth measures contain anomalies (notably the far end of the bridge [the point marked "A" on the map], the joints of the curves [point "B"], and the zig-zags in final sharp left [point "C"]). 
+2. Additional time can be spent on tuning gear transitions. 
+3. A script-controlled operational framework would facilitate automated testing across the matrix of screen resolutions and graphics qualities.
 
 ## Dependencies
 
