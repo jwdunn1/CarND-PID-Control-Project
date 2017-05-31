@@ -18,26 +18,26 @@ const double M_PI = 3.14159265358979323846;
 
 class Timer1 {
  public:
-	using high_resolution_clock = std::chrono::high_resolution_clock;
-	using ms = std::chrono::milliseconds;
+  using high_resolution_clock = std::chrono::high_resolution_clock;
+  using ms = std::chrono::milliseconds;
 
-	Timer1(bool go = true) {
-		if (go)	start();
-	}
+  Timer1(bool go = true) {
+    if (go)	start();
+  }
 
-	void start() {
-		start_ = high_resolution_clock::now();
-	}
+  void start() {
+    start_ = high_resolution_clock::now();
+  }
 
-	ms duration() {
-		high_resolution_clock::time_point now = high_resolution_clock::now();
-		ms durat = std::chrono::duration_cast<ms>(now - start_);
-		start_ = now;
-		return durat;
-	}
+  ms duration() {
+    high_resolution_clock::time_point now = high_resolution_clock::now();
+    ms durat = std::chrono::duration_cast<ms>(now - start_);
+    start_ = now;
+    return durat;
+  }
 
  private:
-	high_resolution_clock::time_point start_;
+  high_resolution_clock::time_point start_;
 };
 
 
@@ -73,23 +73,23 @@ float q1[3], q2[9], q3[18];
 float tracks[4];
 int qi1 = 0, qi2 = 0, qi3 = 0;
 float getAvg(float a[], int len) {
-	float tot = 0;
-	for (int i = 0; i < len; i++)
-		tot += a[i];
-	return tot / (float)len;
+  float tot = 0;
+  for (int i = 0; i < len; i++)
+    tot += a[i];
+  return tot / (float)len;
 }
 
 int argmin(float anArray[], float key) {
-	float value = abs(key - anArray[0]);
-	int num = 0;
+  float value = abs(key - anArray[0]);
+  int num = 0;
 
-	for (int x = 0; x < 4; x++) {
-		if (abs(key - anArray[x]) < value) {
-			value = abs(key - anArray[x]);
-			num = x;
-		}
-	}
-	return num;
+  for (int x = 0; x < 4; x++) {
+    if (abs(key - anArray[x]) < value) {
+      value = abs(key - anArray[x]);
+      num = x;
+    }
+  }
+  return num;
 }*/
 
 int main() {
@@ -141,110 +141,110 @@ int main() {
           double cte = std::stod(j[1]["cte"].get<std::string>());
           double speed = std::stod(j[1]["speed"].get<std::string>());
           double angle = std::stod(j[1]["steering_angle"].get<std::string>());
-		  double throttle = 0.05;
-		  double steer_value = 0.0;
-		  Timer1::ms duration = timer.duration();
-		  long long outd = duration.count();
-		  if (speed > maxSpeed) maxSpeed = speed;
-		  frameCount++;
-		  std::cout << "Frm: " << frameCount << " FPS: " << 1000 / outd << " Max: " << maxSpeed;
-		  
-		  //std::cout << "cte:" << cte << std::endl;
-		  //q2[qi2++] = cte; // attempt to smooth out the cte values due to GT anomalies
-		  //if (qi2 > 3) qi2 = 0;
-		  //cte = getAvg(q2, 4);
-		  //std::cout << "cte avg:" << cte << " speed:" << speed << " angle:" << angle << std::endl;
-		  
-		  if (cte > -3.8 && cte < 3.8) {  // abs() and fabs() not working
-			  /*
-			  * TODO: Calcuate steering value here, remember the steering value is
-			  * [-1, 1].
-			  * NOTE: Feel free to play around with the throttle and speed. Maybe use
-			  * another PID controller to control the speed!
-			  */
-			  if (speed > 40.0) { // Fifth gear
-				  std::cout << " Gear: 5";
-				  pid.Init(1.0, 0.0, 64.0);
-				  pid.UpdateError(cte);
-				  steer_value = pid.TotalError();
-				  if (cte < -0.6 || cte > 0.6) {
-					  throttle = -1.0; // BRAKE!!!
-					  steer_value = std::min(0.2, steer_value);   //  .1 = 2.5 degrees      .15 = 3.75 degrees
-					  steer_value = std::max(-0.2, steer_value);  //
-				  }
-				  else {
-					  throttle = 1.0; // fly   0.71   0.65
-					  steer_value = std::min(0.1, steer_value);   //  .1 = 2.5 degrees      .15 = 3.75 degrees
-					  steer_value = std::max(-0.1, steer_value);  //
-				  }
-			  }
-			  else if (speed > 30.0) {  // Fourth gear
-				  std::cout << " Gear: 4";
-				  pid.Init(1.0, 0.0, 64.0);
-				  pid.UpdateError(cte);
-				  steer_value = pid.TotalError();
-				  if (cte < -0.5 || cte > 0.5) {
-					  throttle = -0.5; // Slow it down and allow for wider steering angle
-					  steer_value = std::min(0.3, steer_value);   // 0.2 = 7.5 degrees
-					  steer_value = std::max(-0.3, steer_value);  //
-				  }
-				  else {
-					  throttle = 0.6; // run
-					  steer_value = std::min(0.1, steer_value);   // 0.1 = 2.5 degrees
-					  steer_value = std::max(-0.1, steer_value);  //
-				  }
-			  }
-			  else if (speed > 25.0) {  // Third gear
-				  std::cout << " Gear: 3";
-				  pid.Init(1.0, 0.0, 32.0);
-				  pid.UpdateError(cte);
-				  steer_value = pid.TotalError();
-				  steer_value = std::min(0.30/2, steer_value);   // 0.3 = 7.5 degrees
-				  steer_value = std::max(-0.30/2, steer_value);  //
-				  if (cte < -0.4 || cte > 0.4) throttle = -0.2; // Slow it down
-				  else throttle = 0.35; // walk
-			  }
-			  else if (speed > 18.0) { // Second gear... under .25 throttle 
-				  std::cout << " Gear: 2";  // is allowed larger turning radius
-				  pid.Init(1.0, 0.0, 32.0);
-				  pid.UpdateError(cte);
-				  steer_value = pid.TotalError();
-				  steer_value = std::min(0.4, steer_value);   //  0.4 = 10 degrees   
-				  steer_value = std::max(-0.4, steer_value);  //
-				  if (cte < -0.3 || cte > 0.3) throttle = 0.0;
-				  else 
-					  if (frameCount>400) throttle = 0.25; // crawl
-					  else throttle = 0.5;
-			  }
-			  else { // First gear
-				  std::cout << " Gear: 1";
-				  throttle = 1.0; // Start yer engines, give it a boost
-			  }
-			  steer_value -= 0.017452; // subtract measured bias for balanced steering
-			  //steer_value = 0.5 * angle/25.0 + 0.5* steer_value; // use a percentage of steering value
+      double throttle = 0.05;
+      double steer_value = 0.0;
+      Timer1::ms duration = timer.duration();
+      long long outd = duration.count();
+      if (speed > maxSpeed) maxSpeed = speed;
+      frameCount++;
+      std::cout << "Frm: " << frameCount << " FPS: " << 1000 / outd << " Max: " << maxSpeed;
+      
+      //std::cout << "cte:" << cte << std::endl;
+      //q2[qi2++] = cte; // attempt to smooth out the cte values due to GT anomalies
+      //if (qi2 > 3) qi2 = 0;
+      //cte = getAvg(q2, 4);
+      //std::cout << "cte avg:" << cte << " speed:" << speed << " angle:" << angle << std::endl;
+      
+      if (cte > -3.8 && cte < 3.8) {  // abs() and fabs() not working
+        /*
+        * TODO: Calcuate steering value here, remember the steering value is
+        * [-1, 1].
+        * NOTE: Feel free to play around with the throttle and speed. Maybe use
+        * another PID controller to control the speed!
+        */
+        if (speed > 40.0) { // Fifth gear
+          std::cout << " Gear: 5";
+          pid.Init(1.0, 0.0, 64.0);
+          pid.UpdateError(cte);
+          steer_value = pid.TotalError();
+          if (cte < -0.6 || cte > 0.6) {
+            throttle = -1.0; // BRAKE!!!
+            steer_value = std::min(0.2, steer_value);   //  .1 = 2.5 degrees      .15 = 3.75 degrees
+            steer_value = std::max(-0.2, steer_value);  //
+          }
+          else {
+            throttle = 1.0; // fly   0.71   0.65
+            steer_value = std::min(0.1, steer_value);   //  .1 = 2.5 degrees      .15 = 3.75 degrees
+            steer_value = std::max(-0.1, steer_value);  //
+          }
+        }
+        else if (speed > 30.0) {  // Fourth gear
+          std::cout << " Gear: 4";
+          pid.Init(1.0, 0.0, 64.0);
+          pid.UpdateError(cte);
+          steer_value = pid.TotalError();
+          if (cte < -0.5 || cte > 0.5) {
+            throttle = -0.5; // Slow it down and allow for wider steering angle
+            steer_value = std::min(0.3, steer_value);   // 0.2 = 7.5 degrees
+            steer_value = std::max(-0.3, steer_value);  //
+          }
+          else {
+            throttle = 0.6; // run
+            steer_value = std::min(0.1, steer_value);   // 0.1 = 2.5 degrees
+            steer_value = std::max(-0.1, steer_value);  //
+          }
+        }
+        else if (speed > 25.0) {  // Third gear
+          std::cout << " Gear: 3";
+          pid.Init(1.0, 0.0, 32.0);
+          pid.UpdateError(cte);
+          steer_value = pid.TotalError();
+          steer_value = std::min(0.30/2, steer_value);   // 0.3 = 7.5 degrees
+          steer_value = std::max(-0.30/2, steer_value);  //
+          if (cte < -0.4 || cte > 0.4) throttle = -0.2; // Slow it down
+          else throttle = 0.35; // walk
+        }
+        else if (speed > 18.0) { // Second gear... under .25 throttle 
+          std::cout << " Gear: 2";  // is allowed larger turning radius
+          pid.Init(1.0, 0.0, 32.0);
+          pid.UpdateError(cte);
+          steer_value = pid.TotalError();
+          steer_value = std::min(0.4, steer_value);   //  0.4 = 10 degrees   
+          steer_value = std::max(-0.4, steer_value);  //
+          if (cte < -0.3 || cte > 0.3) throttle = 0.0;
+          else 
+            if (frameCount>400) throttle = 0.25; // crawl
+            else throttle = 0.5;
+        }
+        else { // First gear
+          std::cout << " Gear: 1";
+          throttle = 1.0; // Start yer engines, give it a boost
+        }
+        steer_value -= 0.017452; // subtract measured bias for balanced steering
+        //steer_value = 0.5 * angle/25.0 + 0.5* steer_value; // use a percentage of steering value
 
-			  // DEBUG
-			  int steerInt = steer_value * 1000;
-			  steer_value = steerInt / 1000.0;
-			  std::cout << " Thr: " << throttle << " Str: " << steer_value << " Flt: " << faultCount << std::endl;
+        // DEBUG
+        int steerInt = steer_value * 1000;
+        steer_value = steerInt / 1000.0;
+        std::cout << " Thr: " << throttle << " Str: " << steer_value << " Flt: " << faultCount << std::endl;
 
-			  //std::cout << cte << "\t" << steer_value << "\t" << throttle  << std::endl;
+        //std::cout << cte << "\t" << steer_value << "\t" << throttle  << std::endl;
 
-			  //throttle = 0.1;
-			  json msgJson;
-			  msgJson["steering_angle"] = steer_value;
-			  msgJson["throttle"] = throttle;
-			  auto msg = "42[\"steer\"," + msgJson.dump() + "]";
-			  //std::cout << msg << std::endl;
-			  ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
-		  }
-		  else {
-			  // reset
-			  faultCount++;
-			  std::cout << "resetting" << std::endl;
-			  std::string msg("42[\"reset\", {}]");
-			  ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
-		  }
+        //throttle = 0.1;
+        json msgJson;
+        msgJson["steering_angle"] = steer_value;
+        msgJson["throttle"] = throttle;
+        auto msg = "42[\"steer\"," + msgJson.dump() + "]";
+        //std::cout << msg << std::endl;
+        ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+      }
+      else {
+        // reset
+        faultCount++;
+        std::cout << "resetting" << std::endl;
+        std::string msg("42[\"reset\", {}]");
+        ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+      }
         }
       } else {
         // Manual driving
