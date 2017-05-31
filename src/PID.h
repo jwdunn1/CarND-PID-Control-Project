@@ -1,3 +1,10 @@
+/*                                                                         80->|
+ * pid.cpp
+ *
+ * Modifications: James William Dunn
+ *          Date: May 29, 2017
+ */
+
 #ifndef PID_H
 #define PID_H
 
@@ -9,6 +16,11 @@ public:
   double p_error;
   double i_error;
   double d_error;
+  
+  double cte;
+  double prev_cte;
+  double prev_cte2;
+  double cte_sum;
 
   /*
   * Coefficients
