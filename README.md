@@ -38,6 +38,9 @@ The model was tested in a variety of simulator resolution and render modes, and 
 
 [![Lake Track Video](./images/LakeTrackVideo.png "Lake Track Video")](https://vimeo.com/219612239)
 
+### Post-review update
+To handle slower frame rates, the derivative term is normalized. (Reviewer reported a max speed of ~20mph.) Additional testing was performed at 15FPS and 20FPS with successful top-speeds over 70mph. Your mileage may vary.
+
 ### Further research
 1. The ground truth measures contain anomalies (notably the far end of the bridge [the point marked "A" on the map], the joints of the curves [point "B"], and the zig-zags in final sharp left [point "C"]). 
 2. Additional time can be spent on tuning gear transitions. 
