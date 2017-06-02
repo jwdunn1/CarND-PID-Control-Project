@@ -164,7 +164,7 @@ int main() {
         if (speed > 40.0) { // Fifth gear
           std::cout << " Gear: 5";
           pid.Init(1.0, 0.0, 64.0);
-          pid.UpdateError(cte);
+          pid.UpdateError(cte,outd);
           steer_value = pid.TotalError();
           if (cte < -0.6 || cte > 0.6) {
             throttle = -1.0; // BRAKE!!!
@@ -180,7 +180,7 @@ int main() {
         else if (speed > 30.0) {  // Fourth gear
           std::cout << " Gear: 4";
           pid.Init(1.0, 0.0, 64.0);
-          pid.UpdateError(cte);
+          pid.UpdateError(cte,outd);
           steer_value = pid.TotalError();
           if (cte < -0.5 || cte > 0.5) {
             throttle = -0.5; // Slow it down and allow for wider steering angle
@@ -196,7 +196,7 @@ int main() {
         else if (speed > 25.0) {  // Third gear
           std::cout << " Gear: 3";
           pid.Init(1.0, 0.0, 32.0);
-          pid.UpdateError(cte);
+          pid.UpdateError(cte,outd);
           steer_value = pid.TotalError();
           steer_value = std::min(0.30/2, steer_value);   // 0.3 = 7.5 degrees
           steer_value = std::max(-0.30/2, steer_value);  //
@@ -206,7 +206,7 @@ int main() {
         else if (speed > 18.0) { // Second gear... under .25 throttle 
           std::cout << " Gear: 2";  // is allowed larger turning radius
           pid.Init(1.0, 0.0, 32.0);
-          pid.UpdateError(cte);
+          pid.UpdateError(cte,outd);
           steer_value = pid.TotalError();
           steer_value = std::min(0.4, steer_value);   //  0.4 = 10 degrees   
           steer_value = std::max(-0.4, steer_value);  //
